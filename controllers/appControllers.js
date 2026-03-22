@@ -1,6 +1,17 @@
 import { check, validationResult } from 'express-validator'
-const inicio= (req, res) =>{
-    res.render('inicio');
+const inicio= async (req, res) =>{
+    const mostrar = await fetch(`http://localhost:3000/inventario/colectores`);
+        
+        if (!mostrar.ok) {
+            console.error("El servidor de la tabla respondió con error");
+            // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
+            return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
+        }
+        const colectores= await mostrar.json();
+        return res.render('inicio', {
+        pagina: 'Registro de Zonas',
+        colectores: colectores
+    });
 }
 const guardarCodigo= async(req, res) =>{
     const {colector, zona, codigo, descripcion, cantidad, almacen} = req.body;
@@ -42,7 +53,7 @@ const guardarCodigo= async(req, res) =>{
             "cantidad": cantidad,
             "almacen": almacen
         };
-        const respuesta = await fetch('http://localhost:3000/inventario/guardarRegistro', { 
+        const respuesta = await fetch(`http://localhost:3000/inventario/guardarRegistro/`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -58,10 +69,20 @@ const guardarCodigo= async(req, res) =>{
             const textError = await respuesta.text();
             throw new Error('Servidor devolvió HTML/Texto.');
         }
-        console.log(req.body);
-        res.render('tabla') = (req, res)=>{
-            pagina = 'exito';
+        console.log(`Buscando tabla para: ${colector}`);
+        const mostrar = await fetch(`http://localhost:3000/inventario/mostrarTabla/${encodeURIComponent(colector)}`);
+        
+        if (!mostrar.ok) {
+            console.error("El servidor de la tabla respondió con error");
+            // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
+            return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
         }
+
+        const tabla = await mostrar.json();
+        return res.render('tabla', {
+            pagina: 'Mostrando registros',
+            tabla: tabla
+        });
     } catch (err) {
         console.error('Error en el servidor:', err);
         // Aquí también usa el 'res' original

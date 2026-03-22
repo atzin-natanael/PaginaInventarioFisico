@@ -1,4 +1,48 @@
 extends ./layout/index
 
 block contenido
-    h1 Aqui se cargan los datos guardados en la tabla
+    div(class="max-w-6xl mx-auto flex justify-center sm:justify-start")
+        a(href="/" class="rounded-lg py-3 px-10 mb-10 bg-blue-600 hover:bg-blue-800 text-sm font-bold text-white text-center uppercase transition-all shadow-md") Volver al Registro
+    h2(class='text-3xl font-extrabold text-center my-10')= pagina
+    div(class='max-w-6xl mx-auto mb-10')
+        if tabla.length
+            //pre=JSON.stringify(tabla, null,2)
+            div(class='bg-white shadow-xl rounded-lg overflow-hidden')
+                table(class='min-w-full divide-y divide-gray-200')
+                    thead.bg-gray-800.text-white
+                        tr
+                            th(class='px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider') Codigo 
+                            th(class='px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider') Descripción
+                            th(class='px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider') Zona
+                            th(class='px-6 py-3 text-left text-xs font-bold  uppercase tracking-wider') Colector
+                            th(class='px-6 py-3 text-center text-xs font-bold  uppercase tracking-wider') Cantidad
+                            th(class='px-6 py-3 text-center text-xs font-bold  uppercase tracking-wider') Almacén
+                    tbody(class='bg-white divide-y divide-gray-200')
+                        each tab in tabla
+                            tr(class='hover:bg-gray-50 transition-colors')
+                                //- 1. ID / Fecha
+                                td(class='px-6 py-4 whitespace-nowrap')
+                                    span(class='px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full  ')
+                                        | #{tab.CLAVE_ARTICULO}
+                                td(class='px-6 py-4 whitespace-nowrap')
+                                    span(class='px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full  ')
+                                        | #{tab.DESCRIPCION}
+                                td(class='px-6 py-4 whitespace-nowrap')
+                                    span(class='px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full  ')
+                                        | #{tab.ZONA}
+                                td(class='px-6 py-4 whitespace-nowrap')
+                                    span(class='px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full  ')
+                                        | #{tab.RESPONSABLE}
+                                td(class='px-6 py-4 whitespace-nowrap')
+                                    span(class='px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full  ')
+                                        | #{tab.CONTADO}
+                                td(class='px-6 py-4 whitespace-nowrap')
+                                    span(class='px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full  ')
+                                        | #{tab.ALMACEN}
+
+
+
+        else
+            div(class='text-center bg-white shadow p-10 rounded-lg')
+                p(class='text-gray-600 text-xl') No hay registros.
+    
