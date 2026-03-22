@@ -3,7 +3,7 @@ const inicio= (req, res) =>{
     res.render('inicio');
 }
 const guardarCodigo= async(req, res) =>{
-    const {colector, zona, codigo, descripcion, cantidad} = req.body;
+    const {colector, zona, codigo, descripcion, cantidad, almacen} = req.body;
     await check('colector').notEmpty().withMessage('El colector es obligatorio').run(req)
     await check('zona').notEmpty().withMessage('La zona es obligatoria').run(req)
     await check('codigo').notEmpty().withMessage('El codigo es obligatorio').run(req)
@@ -33,9 +33,41 @@ const guardarCodigo= async(req, res) =>{
             datos: req.body // Enviamos los datos para que no se borre lo que el usuario ya escribió
         });
     }
-    console.log(req.body);
-    res.render('tabla') = (req, res)=>{
-        pagina = 'exito';
+    try {
+        const data = {
+            "colector": colector,
+            "zona": zona,
+            "codigo": codigo,
+            "descripcion": descripcion,
+            "cantidad": cantidad,
+            "almacen": almacen
+        };
+        const respuesta = await fetch('http://localhost:3000/inventario/guardarRegistro', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        // Ahora usa 'respuesta' para todo lo que sigue
+        const contentType = respuesta.headers.get("content-type"); 
+
+        let result;
+        if (contentType && contentType.includes("application/json")) {
+            result = await respuesta.json();
+        } else {
+            const textError = await respuesta.text();
+            throw new Error('Servidor devolvió HTML/Texto.');
+        }
+        console.log(req.body);
+        res.render('tabla') = (req, res)=>{
+            pagina = 'exito';
+        }
+    } catch (err) {
+        console.error('Error en el servidor:', err);
+        // Aquí también usa el 'res' original
+        return res.render('templates/mensaje', {
+            pagina: 'Hubo un problema al guardar la cotización.'
+        });
     }
 }
 export {
