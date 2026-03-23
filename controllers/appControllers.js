@@ -19,7 +19,8 @@ const inicio= async (req, res) =>{
                 colector: colector || '',
                 zona: zona || '',
                 almacen: almacen || ''
-            }
+            },
+        apiUrl: process.env.API_URL
     });
 }
 const guardarCodigo= async(req, res) =>{
