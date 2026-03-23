@@ -12,7 +12,12 @@ const inputDescripcion = document.querySelector('#descripcion');
           const url = `${window.API_URL}/codigobyclave/${codigo}`; 
           const respuesta = await fetch(url);
           //console.log(respuesta);
+          if (!respuesta.ok) {
+    // Si la respuesta no es 200-299, lanzamos un error manualmente para que caiga al catch
+              throw new Error(`Error HTTP: ${respuesta.status} - ${respuesta.statusText}`);
+          }
           const resultado = await respuesta.json();
+          console.log('resultado:', resultado)
           // Como el JSON es un arreglo [ {...} ], verificamos que tenga algo
           if (resultado && resultado.length > 0) {
             const articulo = resultado[0]; // Tomamos el primer objeto
