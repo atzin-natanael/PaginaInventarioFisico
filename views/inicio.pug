@@ -58,4 +58,6 @@ block contenido
                 button#btnGuardar(type="submit" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-bold py-4 px-10 rounded-lg shadow-lg uppercase text-sm tracking-widest transition duration-300 transform active:scale-95") Guardar Registro
 
 block scripts
+    script.
+        window.API_URL = "#{apiUrl}";
     script(src="/js/cargarArticulo.js")
