@@ -4,7 +4,7 @@ import { check, validationResult } from 'express-validator'
 const inicio= async (req, res) =>{
     const { colector, zona, almacen } = req.query;
     console.log('zona a mostrar', zona)
-    const mostrar = await fetch(`http://localhost:3000/inventario/colectores`);
+    const mostrar = await fetch(`${process.env.API_URL}/inventario/colectores`);
         
         if (!mostrar.ok) {
             console.error("El servidor de la tabla respondió con error");
@@ -62,7 +62,7 @@ const guardarCodigo= async(req, res) =>{
             "cantidad": cantidad,
             "almacen": almacen
         };
-        const respuesta = await fetch(`http://localhost:3000/inventario/guardarRegistro/`, { 
+        const respuesta = await fetch(`${process.env.API_URL}/inventario/guardarRegistro/`, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -92,7 +92,7 @@ const guardarCodigo= async(req, res) =>{
 const mostrarArticulosInventario = async (req, res) => {
     const colectorId = req.params.id;
     console.log('aqui entra', colectorId)
-    const mostrar = await fetch(`http://localhost:3000/inventario/mostrarTabla/${colectorId}`);
+    const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colectorId}`);
         
         if (!mostrar.ok) {
             console.error("El servidor de la tabla respondió con error");
