@@ -4,6 +4,8 @@ import routes from './routes/appRoutes.js'
 import db from './config/db.js'
 import './models/TablaArticulosInv.js'
 import './models/Colectores.js'
+import './models/index.js'
+
 // 1. Configuraciones de motor de plantillas
 app.set('view engine', 'pug')
 app.set('views', './views')

@@ -1,5 +1,9 @@
+import { Console } from 'console';
 import { check, validationResult } from 'express-validator'
+
 const inicio= async (req, res) =>{
+    const { colector, zona, almacen } = req.query;
+    console.log('zona a mostrar', zona)
     const mostrar = await fetch(`http://localhost:3000/inventario/colectores`);
         
         if (!mostrar.ok) {
@@ -10,7 +14,12 @@ const inicio= async (req, res) =>{
         const colectores= await mostrar.json();
         return res.render('inicio', {
         pagina: 'Registro de Zonas',
-        colectores: colectores
+        colectores: colectores,
+        datos: {
+                colector: colector || '',
+                zona: zona || '',
+                almacen: almacen || ''
+            }
     });
 }
 const guardarCodigo= async(req, res) =>{
@@ -70,19 +79,8 @@ const guardarCodigo= async(req, res) =>{
             throw new Error('Servidor devolvió HTML/Texto.');
         }
         console.log(`Buscando tabla para: ${colector}`);
-        const mostrar = await fetch(`http://localhost:3000/inventario/mostrarTabla/${encodeURIComponent(colector)}`);
-        
-        if (!mostrar.ok) {
-            console.error("El servidor de la tabla respondió con error");
-            // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
-            return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
-        }
+        return res.redirect(`/mostrarTabla/${colector}`);
 
-        const tabla = await mostrar.json();
-        return res.render('tabla', {
-            pagina: 'Mostrando registros',
-            tabla: tabla
-        });
     } catch (err) {
         console.error('Error en el servidor:', err);
         // Aquí también usa el 'res' original
@@ -91,7 +89,43 @@ const guardarCodigo= async(req, res) =>{
         });
     }
 }
+const mostrarArticulosInventario = async (req, res) => {
+    const colectorId = req.params.id;
+    console.log('aqui entra', colectorId)
+    const mostrar = await fetch(`http://localhost:3000/inventario/mostrarTabla/${colectorId}`);
+        
+        if (!mostrar.ok) {
+            console.error("El servidor de la tabla respondió con error");
+            // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
+            return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
+        }
+
+        const tabla = await mostrar.json();
+        console.log('aqui esta la tabla', tabla)
+
+        if(!tabla){
+            return res.redirect(`/mostrarTabla/${colectorId}`);
+        } 
+        let almacen = '';
+        let zona = '';
+        if (tabla && tabla.length > 0) {
+        // 2. OBTENER EL ÚLTIMO REGISTRO (el más reciente)
+        const ultimoRegistro = tabla[tabla.length - 1]; 
+        
+        almacen = ultimoRegistro.ALMACEN;
+        zona = ultimoRegistro.ZONA;
+    }
+    // AQUÍ ES DONDE SÍ VA EL RENDER
+        res.render('tabla', {
+            pagina: 'Inventario Actualizado',
+            tabla: tabla,
+            colectorId,
+            almacen,
+            zona
+        });
+};
 export {
     inicio,
-    guardarCodigo
+    guardarCodigo,
+    mostrarArticulosInventario
 }
