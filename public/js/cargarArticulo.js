@@ -1,6 +1,18 @@
 const inputCodigo = document.querySelector('#codigo');
 const inputDescripcion = document.querySelector('#descripcion');
+    document.addEventListener('DOMContentLoaded', () => {
 
+        const form = document.querySelector('form');
+
+        if (!form) return;
+
+        form.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.target.id !== 'cantidad' || e.target.id != 'boton')) {
+                e.preventDefault();
+            }
+        });
+
+    });
     inputCodigo.addEventListener('change', async (e) => {
       const codigo = e.target.value.trim();
       
