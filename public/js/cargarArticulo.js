@@ -7,7 +7,7 @@ const inputDescripcion = document.querySelector('#descripcion');
         if (!form) return;
 
         form.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && (e.target.id !== 'cantidad' || e.target.id != 'boton')) {
+            if (e.key === 'Enter') {
                 e.preventDefault();
             }
         });
