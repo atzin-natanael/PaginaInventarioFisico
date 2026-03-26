@@ -21,7 +21,7 @@ const inputDescripcion = document.querySelector('#descripcion');
           inputDescripcion.value = 'Buscando producto...';
           
           // Ajusta esta URL a tu ruta real de la API
-          const url = `${window.API_URL}/codigobyclave/${codigo}`; 
+          const url = `${window.API_URL}/codigobyclaveCornejo/${codigo}`; 
           const respuesta = await fetch(url);
           //console.log(respuesta);
           if (!respuesta.ok) {
