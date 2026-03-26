@@ -15,7 +15,7 @@ const inputDescripcion = document.querySelector('#descripcion');
     });
     inputCodigo.addEventListener('change', async (e) => {
       const codigo = e.target.value.trim();
-      
+      if(!codigo) return;
       if (codigo.length > 0) {
         try {
           inputDescripcion.value = 'Buscando producto...';
@@ -50,8 +50,6 @@ const inputDescripcion = document.querySelector('#descripcion');
 
           } else {
             inputDescripcion.value = '❌ PRODUCTO NO REGISTRADO';
-            inputDescripcion.classList.add('text-red-500', 'border-red-500');
-            inputDescripcion.classList.remove('bg-green-50');
           }
         } catch (error) {
           console.error('Error:', error);

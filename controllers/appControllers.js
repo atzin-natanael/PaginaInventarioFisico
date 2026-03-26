@@ -1,27 +1,37 @@
 import { Console } from 'console';
 import { check, validationResult } from 'express-validator'
 
-const inicio= async (req, res) =>{
+const inicio = async (req, res) => {
     const { colector, zona, almacen } = req.query;
-    console.log('zona a mostrar', zona)
-    const mostrar = await fetch(`${process.env.API_URL}/inventario/colectores`);
-        
-        if (!mostrar.ok) {
-            console.error("El servidor de la tabla respondió con error");
-            // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
-            return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
+    
+    try {
+        // Petición a la API de Render para traer los colectores
+        const respuesta = await fetch(`${process.env.API_URL}/inventario/colectores`);
+        const colectores = respuesta.ok ? await respuesta.json() : [];
+
+        if (colectores.length === 0) {
+            console.warn("No se recibieron colectores de la API");
         }
-        const colectores= await mostrar.json();
+
         return res.render('inicio', {
-        pagina: 'Registro de Zonas',
-        colectores: colectores,
-        datos: {
+            pagina: 'Registro de Inventario',
+            colectores, // Enviamos el arreglo de colectores a la vista
+            datos: {
                 colector: colector || '',
                 zona: zona || '',
                 almacen: almacen || ''
             },
-        apiUrl: process.env.API_URL
-    });
+            apiUrl: process.env.API_URL
+        });
+    } catch (error) {
+        console.error("Error al conectar con la API de colectores:", error);
+        return res.render('inicio', {
+            pagina: 'Registro de Inventario',
+            colectores: [], // Enviamos vacío para evitar que la vista truene
+            datos: { colector: '', zona: '', almacen: '' },
+            apiUrl: process.env.API_URL
+        });
+    }
 }
 const guardarCodigo= async(req, res) =>{
     const {colector, zona, codigo, descripcion, cantidad, almacen} = req.body;
@@ -48,10 +58,15 @@ const guardarCodigo= async(req, res) =>{
     let resultado = validationResult(req);
     //console.log(resultado)
     if (!resultado.isEmpty()) {
+        // Petición a la API de Render para traer los colectores
+        const respuesta = await fetch(`${process.env.API_URL}/inventario/colectores`);
+        const colectores = respuesta.ok ? await respuesta.json() : [];
         // Si hay errores, volvemos a renderizar la página con las alertas
         return res.render('inicio', {
             errores: resultado.array(),
-            datos: req.body // Enviamos los datos para que no se borre lo que el usuario ya escribió
+            datos: req.body, // Enviamos los datos para que no se borre lo que el usuario ya escribió
+            colectores: colectores,
+            apiUrl: process.env.API_URL
         });
     }
     try {
