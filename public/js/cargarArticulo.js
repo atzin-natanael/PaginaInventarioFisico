@@ -23,7 +23,14 @@ const inputDescripcion = document.querySelector('#descripcion');
           // Ajusta esta URL a tu ruta real de la API
           const url = `${window.API_URL}/codigobyclaveCornejo/${codigo}`; 
           const respuesta = await fetch(url);
+          console.log(respuesta);
           //console.log(respuesta);
+          if(respuesta.status === 404){
+             inputDescripcion.value = '❌ PRODUCTO NO REGISTRADO';
+            inputDescripcion.classList.add('text-red-500', 'border-red-500');
+            inputDescripcion.classList.remove('bg-green-50');
+            return;
+          }
           if (!respuesta.ok) {
     // Si la respuesta no es 200-299, lanzamos un error manualmente para que caiga al catch
               throw new Error(`Error HTTP: ${respuesta.status} - ${respuesta.statusText}`);
