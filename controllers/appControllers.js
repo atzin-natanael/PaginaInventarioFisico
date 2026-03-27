@@ -195,9 +195,67 @@ const Excel = async (req, res) =>{
     }
     // 3. Agregar los datos de tu variable
 }
+const admin = async (req, res) => {
+    const { colector, zona, almacen } = req.query;
+    
+    try {
+        // Petición a la API de Render para traer los colectores
+        const respuesta = await fetch(`${process.env.API_URL}/inventario/colectores`);
+        const colectores = respuesta.ok ? await respuesta.json() : [];
+
+        if (colectores.length === 0) {
+            console.warn("No se recibieron colectores de la API");
+        }
+
+        return res.render('admin', {
+            pagina: 'Registro de Inventario',
+            colectores, // Enviamos el arreglo de colectores a la vista
+            datos: {
+                colector: colector || '',
+                zona: zona || '',
+                almacen: almacen || ''
+            },
+            apiUrl: process.env.API_URL
+        });
+    } catch (error) {
+        console.error("Error al conectar con la API de colectores:", error);
+        return res.render('admin', {
+            pagina: 'Registro de Inventario',
+            colectores: [], // Enviamos vacío para evitar que la vista truene
+            datos: { colector: '', zona: '', almacen: '' },
+            apiUrl: process.env.API_URL
+        });
+    }
+}
+const mostrarInventarioForm = async (req, res) => {
+    const {colector} = req.query;
+    console.log('aqui entra', req.query)
+    const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colector}`);
+        
+        if (!mostrar.ok) {
+            console.error("El servidor de la tabla respondió con error");
+            // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
+            return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
+        }
+
+        const tabla = await mostrar.json();
+
+        if(!tabla){
+            return res.redirect(`/mostrarTabla/${colector}`);
+        } 
+        
+    // AQUÍ ES DONDE SÍ VA EL RENDER
+        res.render('tablaAdmin', {
+            pagina: 'Inventario Actualizado',
+            tabla: tabla,
+            colector,
+        });
+    }
 export {
     inicio,
     guardarCodigo,
     mostrarArticulosInventario,
-    Excel
+    Excel,
+    admin,
+    mostrarInventarioForm
 }

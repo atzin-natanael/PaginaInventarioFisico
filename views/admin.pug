@@ -1,0 +1,22 @@
+extends ./layout/index
+
+block contenido
+  //- Título: Ajustamos el padding y tamaño de texto para móvil
+  h1(class="bg-white border-b-4 border-sky-400 p-4 md:p-5 text-center font-extrabold text-xl md:text-2xl uppercase tracking-wider shadow-sm") REGISTRO DE INVENTARIO
+  
+  div(class="py-5 md:py-10 bg-gray-50 min-h-screen px-4")
+    div(class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-md border border-gray-100")
+       form(action=`/mostrarTabla` method="GET" class="flex gap-4 items-end bg-white p-4 shadow rounded-lg")
+            div(class="flex-1")
+                label(for="colector" class="font-bold text-gray-700 uppercase text-xs md:text-sm md:w-24") Colector:
+                    select#colector(name="colector" class="p-3 mt-3 w-full border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white transition")
+                        option(value="") -- Seleccione --
+                        if colectores 
+                            each colector in colectores
+                                option(value=colector.COLECTOR_ID selected= datos ? (datos.colector == colector.COLECTOR_ID) : false) #{colector.COLECTOR}
+                        else
+                            option(value="1") No encontrado
+
+            button(type="submit" class="bg-sky-600 text-white px-6 py-2 rounded font-bold hover:bg-sky-700") Buscar
+
+               

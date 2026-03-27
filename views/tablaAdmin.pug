@@ -1,0 +1,53 @@
+extends ./layout/index
+
+block contenido
+    h1(class="bg-white border-b-4 border-sky-400 p-5 text-center font-extrabold text-2xl uppercase tracking-wider shadow-sm") Registros
+    
+    div(class="max-w-6xl mx-auto flex justify-center sm:justify-start px-4")
+        a(href=`/admin` class="rounded-lg py-3 mt-5 px-10 mb-10 bg-blue-600 hover:bg-blue-800 text-sm font-bold text-white text-center uppercase transition-all shadow-md w-full sm:w-auto") Volver al Registro
+
+    div(class='max-w-6xl mx-auto mb-10 px-2 sm:px-4')
+        if tabla.length
+            div(class='bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200')
+                table(class='min-w-full divide-y divide-gray-200')
+                    thead.bg-gray-800.text-white
+                        tr
+                            //- Usamos clases de Tailwind para ocultar/mostrar columnas
+                            th(class='px-3 py-3 text-left text-xs font-bold uppercase tracking-wider') Cod
+                            th(class='hidden md:table-cell px-6 py-3 text-left text-xs font-bold uppercase tracking-wider') Descripción
+                            th(class='px-3 py-3 text-left text-xs font-bold uppercase tracking-wider') Zona
+                            th(class='hidden lg:table-cell px-6 py-3 text-left text-xs font-bold uppercase tracking-wider') Colector
+                            th(class='px-3 py-3 text-center text-xs font-bold uppercase tracking-wider') Cant
+                            th(class='hidden sm:table-cell px-6 py-3 text-center text-xs font-bold uppercase tracking-wider') Almacén
+                    
+                    tbody(class='bg-white divide-y divide-gray-200')
+                        each tab in tabla
+                            tr(class='hover:bg-gray-50 transition-colors text-sm')
+                                //- Código (Siempre visible)
+                                td(class='px-3 py-4 whitespace-nowrap font-medium text-gray-900')
+                                    | #{tab.CLAVE_ARTICULO}
+                                
+                                //- Descripción (Oculta en móviles: hidden md:table-cell)
+                                td(class='hidden md:table-cell px-6 py-4')
+                                    span(class='text-gray-600') #{tab.DESCRIPCION}
+                                
+                                //- Zona (Siempre visible)
+                                td(class='px-3 py-4 whitespace-nowrap')
+                                    span(class='bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold') #{tab.ZONA}
+                                
+                                //- Colector (Oculto en móviles y tablets: hidden lg:table-cell)
+                                td(class='hidden lg:table-cell px-6 py-4 whitespace-nowrap text-gray-500')
+                                    | #{tab.NOMBRE_COLECTOR}
+                                
+                                //- Cantidad (Siempre visible, resaltada)
+                                td(class='px-3 py-4 whitespace-nowrap text-center font-bold text-sky-600')
+                                    | #{tab.CONTADO}
+                                
+                                //- Almacén (Oculto en móviles muy pequeños: hidden sm:table-cell)
+                                td(class='hidden sm:table-cell px-6 py-4 whitespace-nowrap text-center text-gray-500')
+                                    | #{tab.ALMACEN}
+        else
+            div(class='text-center bg-white shadow p-10 rounded-lg border border-gray-100')
+                p(class='text-gray-600 text-xl font-semibold') No hay registros para este colector.
+        div(class="max-w-6xl mx-auto flex justify-center sm:justify-start px-4")
+            a(href=`/Excel/${colectorId}` class="rounded-lg py-3 mt-5 px-10 mb-10 bg-gray-600 hover:bg-gray-800 text-sm font-bold text-white text-center uppercase transition-all shadow-md w-full sm:w-auto") Descargar Registros
