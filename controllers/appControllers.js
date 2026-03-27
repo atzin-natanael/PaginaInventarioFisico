@@ -1,5 +1,7 @@
 import { Console } from 'console';
 import { check, validationResult } from 'express-validator'
+import ExcelJS from 'exceljs'
+import path from 'path'
 
 const inicio = async (req, res) => {
     const { colector, zona, almacen } = req.query;
@@ -117,7 +119,6 @@ const mostrarArticulosInventario = async (req, res) => {
         }
 
         const tabla = await mostrar.json();
-        console.log('aqui esta la tabla', tabla)
 
         if(!tabla){
             return res.redirect(`/mostrarTabla/${colectorId}`);
@@ -140,8 +141,63 @@ const mostrarArticulosInventario = async (req, res) => {
             zona
         });
 };
+const Excel = async (req, res) =>{
+    const colectorId = req.params.id;
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Inventario');
+
+    // 2. Definir las columnas
+    worksheet.columns = [
+        { header: 'Código', key: 'codigo', width: 15 },
+        { header: 'Descripción', key: 'descripcion', width: 40 },
+        { header: 'Contado', key: 'contado', width: 20 },
+        { header: 'Zona', key: 'zona', width: 30 },
+        { header: 'Responsable', key: 'colector', width: 40 },
+        { header: 'Almacén', key: 'almacen', width: 43 }
+    ];
+    try {
+        // Petición a la API de Render para traer los colectores
+        const respuesta = await fetch(`${process.env.API_URL}/inventario/mostrarRegistros`);
+        const registros = respuesta.ok ? await respuesta.json() : [];
+        console.log('registros: ', registros);
+        if (registros.length === 0) {
+            console.warn("No se recibieron registros de la API");
+        }
+        registros.forEach((fila) => {
+            worksheet.addRow({
+                codigo: fila.CLAVE_ARTICULO,
+                descripcion: fila.DESCRIPCION,
+                contado: fila.CONTADO,
+                zona: fila.ZONA,
+                colector: fila.NOMBRE_COLECTOR,
+                almacen: fila.ALMACEN
+            });
+        });
+    
+        // 4. Guardar el archivo físicamente
+        const nombreArchivo = 'Inventario_Cornejo.xlsx';
+        await workbook.xlsx.writeFile(nombreArchivo);
+        
+        console.log(`Archivo ${nombreArchivo} guardado con éxito.`);
+        res.setHeader(
+            'Content-Type', 
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+        res.setHeader(
+            'Content-Disposition', 
+            `attachment; filename=${nombreArchivo}`
+        );
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (error) {
+        console.error("Error al conectar con la API de colectores:", error);
+    }
+    // 3. Agregar los datos de tu variable
+}
 export {
     inicio,
     guardarCodigo,
-    mostrarArticulosInventario
+    mostrarArticulosInventario,
+    Excel
 }
