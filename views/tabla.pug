@@ -22,6 +22,7 @@ block contenido
                             th(class='hidden lg:table-cell px-6 py-3 text-left text-xs font-bold uppercase tracking-wider') Colector
                             th(class='px-3 py-3 text-center text-xs font-bold uppercase tracking-wider') Cant
                             th(class='hidden sm:table-cell px-6 py-3 text-center text-xs font-bold uppercase tracking-wider') Almacén
+                            th(class='px-3 py-3 text-left text-xs font-bold uppercase tracking-wider')
                     
                     tbody(class='bg-white divide-y divide-gray-200')
                         each tab in tabla
@@ -49,6 +50,14 @@ block contenido
                                 //- Almacén (Oculto en móviles muy pequeños: hidden sm:table-cell)
                                 td(class='hidden sm:table-cell px-6 py-4 whitespace-nowrap text-center text-gray-500')
                                     | #{tab.ALMACEN}
+                                td(class="px-3 py-4 text-right whitespace-nowrap ")
+                                    form(action=`/eliminar-articulo/${tab.ID}` method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este registro? Esta acción no se puede deshacer.')")
+                                        //- No olvides que si usas req.body.articuloId, el input name debe coincidir
+                                        input(type="hidden" name="articuloId" value=tab.ID)
+                                        input(type="hidden" name= "colectorId" value=colectorId)
+                                        button(type="submit" class="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all" title="Eliminar Registro")
+                                            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor")
+                                                path(stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16")
         else
             div(class='text-center bg-white shadow p-10 rounded-lg border border-gray-100')
                 p(class='text-gray-600 text-xl font-semibold') No hay registros para este colector.

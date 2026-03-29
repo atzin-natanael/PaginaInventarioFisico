@@ -269,11 +269,41 @@ const mostrarInventarioForm = async (req, res) => {
             total: tabla.length
         });
     }
+const eliminarArticulo= async (req, res)=>{
+    const { id } = req.params;
+    const { colectorId } = req.body; // Para poder redirigir después
+    console.log('body', req.body)
+    console.log('params', req.params)
+    console.log('query', req.query)
+    
+
+
+    try {
+        // Le avisamos a la API de Render que borre el registro
+        const respuesta = await fetch(`${process.env.API_URL}/inventario/eliminar-articulo/${id}`, {
+            method: 'POST', // O 'POST' según cómo esté programada tu API
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('resp', respuesta)
+        if (respuesta.ok) {
+            // Si la API borró con éxito, refrescamos la tabla
+            res.redirect(`/mostrarTabla/${colectorId}`);
+        } else {
+            res.status(500).send("No se pudo eliminar en la API");
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error de conexión con la API");
+    }
+}
 export {
     inicio,
     guardarCodigo,
     mostrarArticulosInventario,
     Excel,
     admin,
-    mostrarInventarioForm
+    mostrarInventarioForm,
+    eliminarArticulo
 }
