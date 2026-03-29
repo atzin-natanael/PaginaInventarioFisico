@@ -3,10 +3,13 @@ extends ./layout/index
 block contenido
     h1(class="bg-white border-b-4 border-sky-400 p-5 text-center font-extrabold text-2xl uppercase tracking-wider shadow-sm") Registros
     
-    div(class="max-w-6xl mx-auto flex justify-center sm:justify-start px-4")
+    div(class="w-full mx-auto flex justify-center sm:justify-start px-4")
         a(href=`/?colector=${colectorId}&zona=${zona}&almacen=${almacen}` class="rounded-lg py-3 mt-5 px-10 mb-10 bg-blue-600 hover:bg-blue-800 text-sm font-bold text-white text-center uppercase transition-all shadow-md w-full sm:w-auto") Volver al Registro
-
-    div(class='max-w-6xl mx-auto mb-10 px-2 sm:px-4')
+    div(class="w-full justify-between flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-sky-400")
+        div(class="mt-2 sm:mt-0 text-center sm:text-right")
+            span(class="text-3xl font-black text-sky-600")= total
+            span(class="ml-2 text-gray-500 font-bold uppercase text-xs") Registros Totales
+    div(class='w-full mx-auto mb-10 mt-5 px-2 sm:px-4')
         if tabla.length
             div(class='bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200')
                 table(class='min-w-full divide-y divide-gray-200')
@@ -49,5 +52,5 @@ block contenido
         else
             div(class='text-center bg-white shadow p-10 rounded-lg border border-gray-100')
                 p(class='text-gray-600 text-xl font-semibold') No hay registros para este colector.
-        div(class="max-w-6xl mx-auto flex justify-center sm:justify-start px-4")
+        div(class="w-full mx-auto flex justify-center sm:justify-start px-4")
             a(href=`/Excel/${colectorId}` class="rounded-lg py-3 mt-5 px-10 mb-10 bg-gray-600 hover:bg-gray-800 text-sm font-bold text-white text-center uppercase transition-all shadow-md w-full sm:w-auto") Descargar Registros

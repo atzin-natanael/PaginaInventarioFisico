@@ -147,6 +147,7 @@ const mostrarArticulosInventario = async (req, res) => {
             tabla: tabla,
             colectorId,
             almacen,
+            total: tabla.length
         });
 };
 const Excel = async (req, res) =>{
@@ -263,6 +264,7 @@ const mostrarInventarioForm = async (req, res) => {
             pagina: 'Inventario Actualizado',
             tabla: tabla,
             colector,
+            total: tabla.length
         });
     }
 export {
