@@ -37,7 +37,13 @@ block contenido
             //- Zona: Ocupa todo el ancho disponible
             div(class="flex flex-col md:flex-row md:items-center gap-2 mt-5")
                 label(for="zona" class="font-bold text-gray-700 uppercase text-xs md:text-sm md:w-24") Zona:
-                input#zona(type="text" value= datos ? datos.zona : '' name="zona" class="flex-1 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Nombre de la zona")
+                select#zona(name="zona" class="p-3 w-full border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400 bg-white transition")
+                        option(value="") -- Seleccione --
+                        if zonas 
+                            each zona in zonas
+                                option(value=zona.ZONA_ID selected= datos ? (datos.zona == zona.ZONA_ID) : false) #{zona.ZONA}
+                        else
+                            option(value="1") No encontrado
 
             //- Código y Descripción: En móvil uno arriba del otro, en PC el código es corto y la descripción larga
             div(class="flex flex-col md:flex-row md:items-center gap-4 mt-5")

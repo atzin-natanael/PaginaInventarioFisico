@@ -14,10 +14,17 @@ const inicio = async (req, res) => {
         if (colectores.length === 0) {
             console.warn("No se recibieron colectores de la API");
         }
+        const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
+        const zonas = respuesta2.ok ? await respuesta2.json() : [];
+
+        if (zonas.length === 0) {
+            console.warn("No se recibieron colectores de la API");
+        }
 
         return res.render('inicio', {
             pagina: 'Registro de Inventario',
             colectores, // Enviamos el arreglo de colectores a la vista
+            zonas,
             datos: {
                 colector: colector || '',
                 zona: zona || '',
@@ -29,7 +36,8 @@ const inicio = async (req, res) => {
         console.error("Error al conectar con la API de colectores:", error);
         return res.render('inicio', {
             pagina: 'Registro de Inventario',
-            colectores: [], // Enviamos vacío para evitar que la vista truene
+            colectores: [], 
+            zonas: [],// Enviamos vacío para evitar que la vista truene
             datos: { colector: '', zona: '', almacen: '' },
             apiUrl: process.env.API_URL
         });
@@ -63,11 +71,14 @@ const guardarCodigo= async(req, res) =>{
         // Petición a la API de Render para traer los colectores
         const respuesta = await fetch(`${process.env.API_URL}/inventario/colectores`);
         const colectores = respuesta.ok ? await respuesta.json() : [];
+        const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
+        const zonas = respuesta2.ok ? await respuesta2.json() : [];
         // Si hay errores, volvemos a renderizar la página con las alertas
         return res.render('inicio', {
             errores: resultado.array(),
             datos: req.body, // Enviamos los datos para que no se borre lo que el usuario ya escribió
             colectores: colectores,
+            zonas: zonas,
             apiUrl: process.env.API_URL
         });
     }
@@ -124,13 +135,11 @@ const mostrarArticulosInventario = async (req, res) => {
             return res.redirect(`/mostrarTabla/${colectorId}`);
         } 
         let almacen = '';
-        let zona = '';
         if (tabla && tabla.length > 0) {
         // 2. OBTENER EL ÚLTIMO REGISTRO (el más reciente)
         const ultimoRegistro = tabla[tabla.length - 1]; 
         
         almacen = ultimoRegistro.ALMACEN;
-        zona = ultimoRegistro.ZONA;
     }
     // AQUÍ ES DONDE SÍ VA EL RENDER
         res.render('tabla', {
@@ -138,7 +147,6 @@ const mostrarArticulosInventario = async (req, res) => {
             tabla: tabla,
             colectorId,
             almacen,
-            zona
         });
 };
 const Excel = async (req, res) =>{
@@ -168,7 +176,7 @@ const Excel = async (req, res) =>{
                 codigo: fila.CLAVE_ARTICULO,
                 descripcion: fila.DESCRIPCION,
                 contado: fila.CONTADO,
-                zona: fila.ZONA,
+                zona: fila.NOMBRE_ZONA,
                 colector: fila.NOMBRE_COLECTOR,
                 almacen: fila.ALMACEN
             });
@@ -206,10 +214,16 @@ const admin = async (req, res) => {
         if (colectores.length === 0) {
             console.warn("No se recibieron colectores de la API");
         }
+        const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
+        const zonas = respuesta2.ok ? await respuesta2.json() : [];
 
+        if (zonas.length === 0) {
+            console.warn("No se recibieron colectores de la API");
+        }
         return res.render('admin', {
             pagina: 'Registro de Inventario',
-            colectores, // Enviamos el arreglo de colectores a la vista
+            colectores,
+            zonas, // Enviamos el arreglo de colectores a la vista
             datos: {
                 colector: colector || '',
                 zona: zona || '',

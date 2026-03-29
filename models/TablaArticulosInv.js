@@ -20,8 +20,8 @@ const TablaArticulos = db.define('ARTICULOS_INV_FISICO', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    ZONA: {
-        type: DataTypes.STRING(72),
+    ZONA_ID: {
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     COLECTOR_ID: {
