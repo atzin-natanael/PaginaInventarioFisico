@@ -140,6 +140,7 @@ const guardarCodigo= async(req, res) =>{
 const mostrarArticulosInventario = async (req, res) => {
     const colectorId = req.params.id;
     const zonaId = req.params.id;
+    const almacen = req.params.id;
 
     const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colectorId}`);
         
@@ -154,7 +155,6 @@ const mostrarArticulosInventario = async (req, res) => {
         if(!tabla){
             return res.redirect(`/mostrarTabla/${colectorId}`);
         } 
-        let almacen = '';
         if (tabla && tabla.length > 0) {
         // 2. OBTENER EL ÚLTIMO REGISTRO (el más reciente)
         const ultimoRegistro = tabla[tabla.length - 1]; 
