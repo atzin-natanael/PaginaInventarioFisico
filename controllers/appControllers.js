@@ -139,8 +139,8 @@ const guardarCodigo= async(req, res) =>{
 }
 const mostrarArticulosInventario = async (req, res) => {
     const colectorId = req.params.id;
-    const zonaId = req.params.id;
-    const almacen = req.params.id;
+    const {almacen, zona} = req.query;
+    console.log('body', req.query)
 
     const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colectorId}`);
         
@@ -165,7 +165,7 @@ const mostrarArticulosInventario = async (req, res) => {
             pagina: 'Inventario Actualizado',
             tabla: tabla,
             colectorId,
-            zonaId,
+            zona,
             almacen,
             total: tabla.length
         });
