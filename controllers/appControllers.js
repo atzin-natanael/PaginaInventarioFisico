@@ -155,12 +155,11 @@ const mostrarArticulosInventario = async (req, res) => {
         if(!tabla){
             return res.redirect(`/mostrarTabla/${colectorId}`);
         } 
-        if (tabla && tabla.length > 0) {
-        // 2. OBTENER EL ÚLTIMO REGISTRO (el más reciente)
-        const ultimoRegistro = tabla[tabla.length - 1]; 
+    //     if (tabla && tabla.length > 0) {
+    //     // 2. OBTENER EL ÚLTIMO REGISTRO (el más reciente)
+    //     const ultimoRegistro = tabla[tabla.length - 1]; 
         
-        almacen = ultimoRegistro.ALMACEN;
-    }
+    // }
     // AQUÍ ES DONDE SÍ VA EL RENDER
         res.render('tabla', {
             pagina: 'Inventario Actualizado',
