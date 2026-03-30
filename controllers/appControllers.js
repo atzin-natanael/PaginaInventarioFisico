@@ -263,9 +263,9 @@ const admin = async (req, res) => {
     }
 }
 const mostrarInventarioForm = async (req, res) => {
-    const {colector} = req.query;
+    const {colector, zona} = req.query;
     console.log('aqui entra', req.query)
-    const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colector}`);
+    const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTablaAdv/${colector}?zona=${zona}`);
         
         if (!mostrar.ok) {
             console.error("El servidor de la tabla respondió con error");
@@ -284,6 +284,7 @@ const mostrarInventarioForm = async (req, res) => {
             pagina: 'Inventario Actualizado',
             tabla: tabla,
             colector,
+            zona,
             total: tabla.length
         });
     }
