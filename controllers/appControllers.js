@@ -108,7 +108,26 @@ const guardarCodigo= async(req, res) =>{
             throw new Error('Servidor devolvió HTML/Texto.');
         }
         console.log(`Buscando tabla para: ${colector}`);
-        return res.redirect(`/mostrarTabla/${colector}`);
+        //MOSTRAR INICIO
+        const respuestac = await fetch(`${process.env.API_URL}/inventario/colectores`);
+        const colectores = respuestac.ok ? await respuestac.json() : [];
+        const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
+        const zonas = respuesta2.ok ? await respuesta2.json() : [];
+        res.render('inicio', {// Pasamos un booleano al Pug
+            colectores: colectores,
+            zonas: zonas,
+            exito: true,
+            apiUrl: process.env.API_URL,
+            // Pasamos los datos para que el formulario se autorrellene
+            datos: {
+                colector,
+                zona,
+                almacen
+            }
+            });
+        //return res.redirect(`/?colector=${colector}&zona=${zona}&almacen=${almacen}`);
+
+        //return res.redirect(`/mostrarTabla/${colector}`);
 
     } catch (err) {
         console.error('Error en el servidor:', err);
