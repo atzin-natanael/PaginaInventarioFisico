@@ -46,10 +46,12 @@ const inicio = async (req, res) => {
 const guardarCodigo= async(req, res) =>{
     const {colector, zona, codigo, descripcion, cantidad, almacen} = req.body;
     await check('colector').notEmpty().withMessage('El colector es obligatorio').run(req)
+    await check('almacen').notEmpty().withMessage('El almacen es obligatorio').run(req)
     await check('zona').notEmpty().withMessage('La zona es obligatoria').run(req)
     await check('codigo').notEmpty().withMessage('El codigo es obligatorio').run(req)
     //await check('cantidad').notEmpty().withMessage('La cantidad es obligatoria').run(req)
     await check('cantidad').isNumeric().withMessage('La cantidad debe ser válida').run(req)
+    await check('cantidad').isFloat({ gt: 0 }).withMessage('La cantidad debe ser mayor a 0').run(req)
 
     // 1. Validar que no esté vacío
     await check('descripcion').notEmpty().withMessage('El código no se ha verificado').run(req);
@@ -142,8 +144,14 @@ const mostrarArticulosInventario = async (req, res) => {
     const {almacen, zona} = req.query;
     console.log('body', req.query)
 
-    const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colectorId}`);
-        
+    const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colectorId}`,
+    {
+        headers: {
+            'x-api-key': process.env.API_KEY
+        }
+    }
+    );
+    console.log('mostrar', mostrar.status)    
         if (!mostrar.ok) {
             console.error("El servidor de la tabla respondió con error");
             // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
@@ -266,7 +274,7 @@ const mostrarInventarioForm = async (req, res) => {
     const {colector, zona} = req.query;
     console.log('aqui entra', req.query)
     const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTablaAdv/${colector}?zona=${zona}`);
-        
+    console.log('mostrar', mostrar.status)   
         if (!mostrar.ok) {
             console.error("El servidor de la tabla respondió con error");
             // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado

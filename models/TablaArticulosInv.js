@@ -29,12 +29,12 @@ const TablaArticulos = db.define('ARTICULOS_INV_FISICO', {
         allowNull: false
     },
     ALMACEN: {
-        type: DataTypes.ENUM('TIENDA', 'ALMACEN', 'HIDALGO'),
+        type: DataTypes.ENUM('TIENDA', 'ALMACEN', 'HIDALGO', 'TONALA'),
         allowNull: false,
         validate: {
             isIn: {
-                args: [['TIENDA', 'ALMACEN', 'HIDALGO']],
-                msg: "El almacén debe ser TIENDA, ALMACEN o HIDALGO"
+                args: [['TIENDA', 'ALMACEN', 'HIDALGO', 'TONALA']],
+                msg: "El almacén debe ser TIENDA, ALMACEN, HIDALGO o TONALA"
             }
         }
     },
