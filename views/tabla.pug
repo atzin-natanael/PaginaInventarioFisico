@@ -2,7 +2,6 @@ extends ./layout/index
 
 block contenido
     h1(class="bg-white border-b-4 border-sky-400 p-5 text-center font-extrabold text-2xl uppercase tracking-wider shadow-sm") Registros
-    
     div(class="w-full mx-auto flex justify-center sm:justify-start px-4")
         a(href=`/?colector=${colectorId}&zona=${zona}&almacen=${almacen}` class="rounded-lg py-3 mt-5 px-10 mb-10 bg-blue-600 hover:bg-blue-800 text-sm font-bold text-white text-center uppercase transition-all shadow-md w-full sm:w-auto") Volver al Registro
     div(class="w-full justify-between flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-sm border-l-4 border-sky-400")
@@ -16,7 +15,7 @@ block contenido
                     thead.bg-gray-800.text-white
                         tr
                             //- Usamos clases de Tailwind para ocultar/mostrar columnas
-                            th(class='px-3 py-3 text-left text-xs font-bold uppercase tracking-wider') Cod
+                            th(class='px-3 py-3 text-left text-xs font-bold uppercase tracking-wider') Codigo
                             th(class='hidden md:table-cell px-6 py-3 text-left text-xs font-bold uppercase tracking-wider') Descripción
                             th(class='px-3 py-3 text-left text-xs font-bold uppercase tracking-wider') Zona
                             th(class='hidden lg:table-cell px-6 py-3 text-left text-xs font-bold uppercase tracking-wider') Colector

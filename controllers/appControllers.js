@@ -157,7 +157,6 @@ const mostrarArticulosInventario = async (req, res) => {
             // Si falla la tabla, al menos mostramos un mensaje y no se queda colgado
             return res.render('templates/mensaje', { pagina: 'Registro guardado, pero no se pudo cargar la tabla.' });
         }
-
         const tabla = await mostrar.json();
 
         if(!tabla){
