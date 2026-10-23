@@ -57,3 +57,43 @@ const inputDescripcion = document.querySelector('#descripcion');
         }
       }
     });
+    const inputCodigo = document.querySelector('#codigo')
+const inputDescripcion = document.querySelector('#descripcion')
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const form = document.querySelector('form')
+    const btnGuardar = document.querySelector('#btnGuardar')
+
+    if (!form) return
+
+    // Evitar enviar con Enter
+    form.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+        }
+    })
+
+    let enviando = false
+
+    form.addEventListener('submit', (e) => {
+
+        // Si ya se está enviando, bloquear otro submit
+        if (enviando) {
+            e.preventDefault()
+            return
+        }
+
+        enviando = true
+
+        // Deshabilitar botón inmediatamente
+        btnGuardar.disabled = true
+        btnGuardar.textContent = 'Guardando...'
+
+        // Opcional: cambiar apariencia
+        btnGuardar.classList.add(
+            'opacity-50',
+            'cursor-not-allowed'
+        )
+    })
+})
