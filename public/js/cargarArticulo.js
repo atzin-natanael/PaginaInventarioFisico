@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             inputDescripcion.value = 'Buscando producto...'
 
             const url =
-                `${window.API_URL}/codigobyclaveCornejo/${codigo}`
+                `${window.API_URL}/apicornejo/codigobybarcode/${codigo}`
 
             const respuesta = await fetch(url)
 
