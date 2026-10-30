@@ -54,7 +54,7 @@ block contenido
             div(class="flex flex-col md:flex-row md:items-center gap-4 mt-5")
                 div(class="flex flex-col md:flex-row md:items-center md:w-1/3 gap-2")
                     label(for="codigo" class="font-bold text-gray-700 uppercase text-xs md:text-sm md:w-24") Código:
-                    input#codigo(type="text" name="codigo" class="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Código")
+                    input#codigo(type="text" inputmode="numeric" name="codigo" class="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="Código")
                 
                 div(class="flex flex-col flex-1")
                     input#descripcion(type="text" name="descripcion" readonly class="w-full p-3 bg-gray-100 border border-gray-200 rounded-md cursor-not-allowed" placeholder="Descripción del producto")
@@ -62,7 +62,7 @@ block contenido
             //- Cantidad
             div(class="flex flex-col md:flex-row md:items-center gap-2 mt-5")
                 label(for="cantidad" class="font-bold text-gray-700 uppercase text-xs md:text-sm md:w-24") Cantidad:
-                input#cantidad(type="text" name="cantidad" value= datos ? datos.cantidad : '' class="w-full md:w-32 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="0")
+                input#cantidad(type="text" inputmode="numeric"name="cantidad" value= datos ? datos.cantidad : '' class="w-full md:w-32 p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-sky-400" placeholder="0")
 
             //- Botón: w-full para que sea fácil de presionar con el pulgar
             div(class="mt-8")
