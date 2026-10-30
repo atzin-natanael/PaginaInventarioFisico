@@ -1,24 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const inputCodigo = document.querySelector('#codigo')
+    const inputCantidad = document.querySelector('#cantidad')
     const inputDescripcion = document.querySelector('#descripcion')
     const form = document.querySelector('form')
     const btnGuardar = document.querySelector('#btnGuardar')
 
     if (!form) return
 
-    // Evitar enviar formulario con Enter
-    form.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault()
-        }
-    })
+    // 1. Evitar que presionar Enter en el campo de Código envíe el formulario y en su lugar pasar a Cantidad
+    if (inputCodigo && inputCantidad) {
+        inputCodigo.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Frena totalmente el envío por defecto
+                inputCantidad.focus();  // Mueve el cursor a la cantidad
+                inputCantidad.select(); // Selecciona el texto (el '0')
+            }
+        });
+    }
 
-    // Evitar múltiples envíos
+    // 2. Evitar múltiples envíos al hacer clic en el botón de guardar
     let enviando = false
 
     form.addEventListener('submit', (e) => {
-
         if (enviando) {
             e.preventDefault()
             return
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         )
     })
 
-    // Buscar artículo al cambiar código
+    // 3. Buscar artículo al cambiar código
     inputCodigo.addEventListener('change', async (e) => {
 
         const codigo = e.target.value.trim()
@@ -72,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!respuesta.ok) {
                 throw new Error(
-                    `Error HTTP: ${respuesta.status} - ${respuesta.statusText}`
+                    `Error HTTP: ${respuesta.status} ${respuesta.statusText}`
                 )
             }
 
