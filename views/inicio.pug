@@ -2,8 +2,8 @@ extends ./layout/index
 
 block contenido
   //- Título: Ajustamos el padding y tamaño de texto para móvil
-  h1(class="bg-white border-b-4 border-sky-400 p-4 md:p-5 text-center font-extrabold text-xl md:text-2xl uppercase tracking-wider shadow-sm") REGISTRO DE INVENTARIO
-  div(class="py-5 md:py-10 bg-gray-50 min-h-screen px-4")
+  h1(class="bg-white border-b-4 border-sky-400 p-3 text-center font-extrabold text-lg sm:text-xl uppercase tracking-wider shadow-sm") REGISTRO DE INVENTARIO
+  div(class="py-4 bg-gray-50 min-h-screen px-3 sm:px-4")
     if errores
       div(class="max-w-md mx-auto mb-5")
         each error in errores
