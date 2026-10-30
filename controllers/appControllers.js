@@ -4,7 +4,7 @@ import ExcelJS from 'exceljs'
 import path from 'path'
 
 const inicio = async (req, res) => {
-    const { colector, zona, almacen } = req.query;
+    const { colector, zona} = req.query;
     
     try {
         // Petición a la API de Render para traer los colectores
@@ -27,8 +27,8 @@ const inicio = async (req, res) => {
             zonas,
             datos: {
                 colector: colector || '',
-                zona: zona || '',
-                almacen: almacen || ''
+                zona: zona || ''
+                //almacen: almacen || ''
             },
             apiUrl: process.env.API_URL
         });
@@ -38,7 +38,7 @@ const inicio = async (req, res) => {
             pagina: 'Registro de Inventario',
             colectores: [], 
             zonas: [],// Enviamos vacío para evitar que la vista truene
-            datos: { colector: '', zona: '', almacen: '' },
+            datos: { colector: '', zona: ''},
             apiUrl: process.env.API_URL
         });
     }
@@ -46,7 +46,7 @@ const inicio = async (req, res) => {
 const guardarCodigo= async(req, res) =>{
     const {colector, zona, codigo, descripcion, cantidad, almacen} = req.body;
     await check('colector').notEmpty().withMessage('El colector es obligatorio').run(req)
-    await check('almacen').notEmpty().withMessage('El almacen es obligatorio').run(req)
+    //await check('almacen').notEmpty().withMessage('El almacen es obligatorio').run(req)
     await check('zona').notEmpty().withMessage('La zona es obligatoria').run(req)
     await check('codigo').notEmpty().withMessage('El codigo es obligatorio').run(req)
     //await check('cantidad').notEmpty().withMessage('La cantidad es obligatoria').run(req)
@@ -90,8 +90,8 @@ const guardarCodigo= async(req, res) =>{
             "zona": zona,
             "codigo": codigo,
             "descripcion": descripcion,
-            "cantidad": cantidad,
-            "almacen": almacen
+            "cantidad": cantidad
+            //"almacen": almacen
         };
         const respuesta = await fetch(`${process.env.API_URL}/inventario/guardarRegistro/`, { 
             method: 'POST',
@@ -123,8 +123,8 @@ const guardarCodigo= async(req, res) =>{
             // Pasamos los datos para que el formulario se autorrellene
             datos: {
                 colector,
-                zona,
-                almacen
+                zona
+                //almacen
             }
             });
         //return res.redirect(`/?colector=${colector}&zona=${zona}&almacen=${almacen}`);
@@ -141,7 +141,9 @@ const guardarCodigo= async(req, res) =>{
 }
 const mostrarArticulosInventario = async (req, res) => {
     const colectorId = req.params.id;
-    const {almacen, zona} = req.query;
+    //const {almacen, zona} = req.query;
+    const {zona} = req.query;
+
     console.log('body', req.query)
 
     const mostrar = await fetch(`${process.env.API_URL}/inventario/mostrarTabla/${colectorId}`,
@@ -173,7 +175,7 @@ const mostrarArticulosInventario = async (req, res) => {
             tabla: tabla,
             colectorId,
             zona,
-            almacen,
+            //almacen,
             total: tabla.length
         });
 };
@@ -188,8 +190,8 @@ const Excel = async (req, res) =>{
         { header: 'Descripción', key: 'descripcion', width: 40 },
         { header: 'Contado', key: 'contado', width: 20 },
         { header: 'Zona', key: 'zona', width: 30 },
-        { header: 'Responsable', key: 'colector', width: 40 },
-        { header: 'Almacén', key: 'almacen', width: 43 }
+        { header: 'Responsable', key: 'colector', width: 40 }
+        //{ header: 'Almacén', key: 'almacen', width: 43 }
     ];
     try {
         // Petición a la API de Render para traer los colectores
@@ -205,8 +207,8 @@ const Excel = async (req, res) =>{
                 descripcion: fila.DESCRIPCION,
                 contado: fila.CONTADO,
                 zona: fila.NOMBRE_ZONA,
-                colector: fila.NOMBRE_COLECTOR,
-                almacen: fila.ALMACEN
+                colector: fila.NOMBRE_COLECTOR
+                //almacen: fila.ALMACEN
             });
         });
     
@@ -254,8 +256,8 @@ const admin = async (req, res) => {
             zonas, // Enviamos el arreglo de colectores a la vista
             datos: {
                 colector: colector || '',
-                zona: zona || '',
-                almacen: almacen || ''
+                zona: zona || ''
+                //almacen: almacen || ''
             },
             apiUrl: process.env.API_URL
         });
@@ -264,7 +266,7 @@ const admin = async (req, res) => {
         return res.render('admin', {
             pagina: 'Registro de Inventario',
             colectores: [], // Enviamos vacío para evitar que la vista truene
-            datos: { colector: '', zona: '', almacen: '' },
+            datos: { colector: '', zona: ''},
             apiUrl: process.env.API_URL
         });
     }
