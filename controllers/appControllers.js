@@ -112,7 +112,7 @@ const guardarCodigo = async (req, res) => {
             console.log('datoscode:', datoscode);
 
             if (Array.isArray(datoscode) && datoscode.length > 0) {
-                codigo_barra = datoscode[0]?.CODIGO || '';
+                codigo_barra = datoscode[0]?.CLAVE_PRINCIPAL || '';
             }
 
             console.log('codigo_barra:', codigo_barra);
