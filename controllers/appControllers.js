@@ -76,7 +76,7 @@ const guardarCodigo= async(req, res) =>{
         const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
         const respuesta3 = await fetch(`${process.env.API_URL}/apicornejo/codigobybarcode/${codigo}`);
         const datoscode = await respuesta3.json();
-        const codigo = datoscode.CLAVE_PRINCIPAL || '';
+        const codigo_barra = datoscode.CLAVE_PRINCIPAL || '';
         console.log('datoscode', datoscode);
         console.log('codigodddddddddddddddddd', codigo);
         const zonas = respuesta2.ok ? await respuesta2.json() : [];
@@ -87,7 +87,7 @@ const guardarCodigo= async(req, res) =>{
             colectores: colectores,
             zonas: zonas,
             apiUrl: process.env.API_URL,
-            codigo: codigo // Enviamos el código para que se muestre en el input
+            codigo_barra // Enviamos el código para que se muestre en el input
         });
     }
     try {
@@ -96,7 +96,8 @@ const guardarCodigo= async(req, res) =>{
             "zona": zona,
             "codigo": codigo,
             "descripcion": descripcion,
-            "cantidad": cantidad
+            "cantidad": cantidad,
+            "codigo_barra": codigo_barra
             //"almacen": almacen
         };
         const respuesta = await fetch(`${process.env.API_URL}/inventario/guardarRegistro/`, { 
