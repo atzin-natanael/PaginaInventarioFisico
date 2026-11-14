@@ -86,7 +86,8 @@ const guardarCodigo= async(req, res) =>{
             datos: req.body, // Enviamos los datos para que no se borre lo que el usuario ya escribió
             colectores: colectores,
             zonas: zonas,
-            apiUrl: process.env.API_URL
+            apiUrl: process.env.API_URL,
+            codigo: codigo // Enviamos el código para que se muestre en el input
         });
     }
     try {
