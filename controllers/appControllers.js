@@ -77,7 +77,7 @@ const guardarCodigo= async(req, res) =>{
         const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
         const respuesta3 = await fetch(`${process.env.API_URL}/apicornejo/codigobybarcode/${codigo}`);
         const datoscode = await respuesta3.json();
-        codigo_barra = datoscode.CLAVE_PRINCIPAL || '';
+        codigo_barra = datoscode[0]?.CODIGO || '';
         console.log('datoscode', datoscode);
         console.log('codigodddddddddddddddddd', codigo_barra);
         const zonas = respuesta2.ok ? await respuesta2.json() : [];
