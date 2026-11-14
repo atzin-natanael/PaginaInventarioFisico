@@ -43,110 +43,232 @@ const inicio = async (req, res) => {
         });
     }
 }
-const guardarCodigo= async(req, res) =>{
-    const {colector, zona, codigo, descripcion, cantidad, almacen} = req.body;
-    await check('colector').notEmpty().withMessage('El colector es obligatorio').run(req)
-    //await check('almacen').notEmpty().withMessage('El almacen es obligatorio').run(req)
-    await check('zona').notEmpty().withMessage('La zona es obligatoria').run(req)
-    await check('codigo').notEmpty().withMessage('El codigo es obligatorio').run(req)
-    //await check('cantidad').notEmpty().withMessage('La cantidad es obligatoria').run(req)
-    await check('cantidad').isNumeric().withMessage('La cantidad debe ser válida').run(req)
-    await check('cantidad').isFloat({ gt: 0 }).withMessage('La cantidad debe ser mayor a 0').run(req)
+const guardarCodigo = async (req, res) => {
+    const {
+        colector,
+        zona,
+        codigo,
+        descripcion,
+        cantidad,
+        almacen
+    } = req.body;
 
-    // 1. Validar que no esté vacío
-    await check('descripcion').notEmpty().withMessage('El código no se ha verificado').run(req);
+    // VALIDACIONES
+    await check('colector')
+        .notEmpty()
+        .withMessage('El colector es obligatorio')
+        .run(req);
 
-    // 2. Validar que NO diga "PRODUCTO NO REGISTRADO"
+    await check('zona')
+        .notEmpty()
+        .withMessage('La zona es obligatoria')
+        .run(req);
+
+    await check('codigo')
+        .notEmpty()
+        .withMessage('El codigo es obligatorio')
+        .run(req);
+
+    await check('cantidad')
+        .isNumeric()
+        .withMessage('La cantidad debe ser válida')
+        .run(req);
+
+    await check('cantidad')
+        .isFloat({ gt: 0 })
+        .withMessage('La cantidad debe ser mayor a 0')
+        .run(req);
+
     await check('descripcion')
-        .not().equals('❌ PRODUCTO NO REGISTRADO')
+        .notEmpty()
+        .withMessage('El código no se ha verificado')
+        .run(req);
+
+    await check('descripcion')
+        .not()
+        .equals('❌ PRODUCTO NO REGISTRADO')
         .withMessage('El código de artículo no existe en el sistema')
         .run(req);
 
-    // 3. Validar que NO se haya quedado en "Buscando..." (por si el usuario fue muy rápido)
     await check('descripcion')
-        .not().equals('Buscando producto...')
+        .not()
+        .equals('Buscando producto...')
         .withMessage('Espera a que se cargue la descripción del producto')
         .run(req);
-    let resultado = validationResult(req);
-    let codigo_barra = '';
-    //console.log(resultado)
-    if (!resultado.isEmpty()) {
-        // Petición a la API de Render para traer los colectores
-        const respuesta = await fetch(`${process.env.API_URL}/inventario/colectores`);
-        const colectores = respuesta.ok ? await respuesta.json() : [];
-        const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
-        const respuesta3 = await fetch(`${process.env.API_URL}/apicornejo/codigobybarcode/${codigo}`);
-        const datoscode = await respuesta3.json();
-        codigo_barra = datoscode[0]?.CODIGO || '';
-        console.log('datoscode', datoscode);
-        console.log('codigodddddddddddddddddd', codigo_barra);
-        const zonas = respuesta2.ok ? await respuesta2.json() : [];
-        // Si hay errores, volvemos a renderizar la página con las alertas
-        return res.render('inicio', {
-            errores: resultado.array(),
-            datos: req.body, // Enviamos los datos para que no se borre lo que el usuario ya escribió
-            colectores: colectores,
-            zonas: zonas,
-            apiUrl: process.env.API_URL,
-            codigo_barra // Enviamos el código para que se muestre en el input
-        });
-    }
-    try {
-        const data = {
-            "colector": colector,
-            "zona": zona,
-            "codigo": codigo,
-            "descripcion": descripcion,
-            "cantidad": cantidad,
-            "codigo_barra": codigo_barra
-            //"almacen": almacen
-        };
-        const respuesta = await fetch(`${process.env.API_URL}/inventario/guardarRegistro/`, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
 
-        // Ahora usa 'respuesta' para todo lo que sigue
-        const contentType = respuesta.headers.get("content-type"); 
+    const resultado = validationResult(req);
+
+    let codigo_barra = '';
+
+    // CONSULTAR EL CÓDIGO DE BARRAS EN API CORNEJO
+    try {
+        const respuesta3 = await fetch(
+            `${process.env.API_URL}/apicornejo/codigobybarcode/${codigo}`
+        );
+
+        if (respuesta3.ok) {
+            const datoscode = await respuesta3.json();
+
+            console.log('datoscode:', datoscode);
+
+            if (Array.isArray(datoscode) && datoscode.length > 0) {
+                codigo_barra = datoscode[0]?.CODIGO || '';
+            }
+
+            console.log('codigo_barra:', codigo_barra);
+        } else {
+            console.log(
+                'No se encontró el código de barras:',
+                respuesta3.status
+            );
+        }
+
+    } catch (error) {
+        console.error(
+            'Error consultando código de barras:',
+            error
+        );
+    }
+
+    // SI HAY ERRORES DE VALIDACIÓN
+    if (!resultado.isEmpty()) {
+
+        try {
+            const respuesta = await fetch(
+                `${process.env.API_URL}/inventario/colectores`
+            );
+
+            const colectores = respuesta.ok
+                ? await respuesta.json()
+                : [];
+
+            const respuesta2 = await fetch(
+                `${process.env.API_URL}/inventario/zonas`
+            );
+
+            const zonas = respuesta2.ok
+                ? await respuesta2.json()
+                : [];
+
+            return res.render('inicio', {
+                errores: resultado.array(),
+                datos: req.body,
+                colectores,
+                zonas,
+                apiUrl: process.env.API_URL,
+                codigo_barra
+            });
+
+        } catch (error) {
+            console.error(
+                'Error cargando colectores o zonas:',
+                error
+            );
+
+            return res.render('templates/mensaje', {
+                pagina: 'Hubo un problema al cargar la información.'
+            });
+        }
+    }
+
+    // GUARDAR REGISTRO
+    try {
+
+        const data = {
+            colector,
+            zona,
+            codigo,
+            descripcion,
+            cantidad,
+            codigo_barra
+            // almacen
+        };
+
+        console.log('DATA QUE SE ENVIA A GUARDAR:', data);
+
+        const respuesta = await fetch(
+            `${process.env.API_URL}/inventario/guardarRegistro/`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+        );
+
+        const contentType = respuesta.headers.get('content-type');
 
         let result;
-        if (contentType && contentType.includes("application/json")) {
+
+        if (
+            contentType &&
+            contentType.includes('application/json')
+        ) {
             result = await respuesta.json();
         } else {
             const textError = await respuesta.text();
-            throw new Error('Servidor devolvió HTML/Texto.');
+
+            console.log('Respuesta servidor:', textError);
+
+            throw new Error(
+                'Servidor devolvió HTML/Texto.'
+            );
         }
+
+        console.log('RESPUESTA GUARDADO:', result);
+
+        if (!respuesta.ok) {
+            throw new Error(
+                result?.mensaje || 'Error al guardar el registro'
+            );
+        }
+
         console.log(`Buscando tabla para: ${colector}`);
-        //MOSTRAR INICIO
-        const respuestac = await fetch(`${process.env.API_URL}/inventario/colectores`);
-        const colectores = respuestac.ok ? await respuestac.json() : [];
-        const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
-        const zonas = respuesta2.ok ? await respuesta2.json() : [];
-        res.render('inicio', {// Pasamos un booleano al Pug
-            colectores: colectores,
-            zonas: zonas,
+
+        // VOLVER A CARGAR COLECTORES
+        const respuestac = await fetch(
+            `${process.env.API_URL}/inventario/colectores`
+        );
+
+        const colectores = respuestac.ok
+            ? await respuestac.json()
+            : [];
+
+        // VOLVER A CARGAR ZONAS
+        const respuesta2 = await fetch(
+            `${process.env.API_URL}/inventario/zonas`
+        );
+
+        const zonas = respuesta2.ok
+            ? await respuesta2.json()
+            : [];
+
+        return res.render('inicio', {
+            colectores,
+            zonas,
             exito: true,
             apiUrl: process.env.API_URL,
-            // Pasamos los datos para que el formulario se autorrellene
+
             datos: {
                 colector,
                 zona
-                //almacen
+                // almacen
             }
-            });
-        //return res.redirect(`/?colector=${colector}&zona=${zona}&almacen=${almacen}`);
-
-        //return res.redirect(`/mostrarTabla/${colector}`);
+        });
 
     } catch (err) {
-        console.error('Error en el servidor:', err);
-        // Aquí también usa el 'res' original
+
+        console.error(
+            'Error en el servidor:',
+            err
+        );
+
         return res.render('templates/mensaje', {
-            pagina: 'Hubo un problema al guardar la cotización.'
+            pagina: 'Hubo un problema al guardar el registro.'
         });
     }
-}
+};
 const mostrarArticulosInventario = async (req, res) => {
     const colectorId = req.params.id;
     //const {almacen, zona} = req.query;
