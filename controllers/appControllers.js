@@ -74,6 +74,11 @@ const guardarCodigo= async(req, res) =>{
         const respuesta = await fetch(`${process.env.API_URL}/inventario/colectores`);
         const colectores = respuesta.ok ? await respuesta.json() : [];
         const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
+        const respuesta3 = await fetch(`${process.env.API_URL}/apicornejo/codigobybarcode/${codigo}`);
+        const datoscode = await respuesta3.json();
+        const codigo = datoscode.CLAVE_PRINCIPAL || '';
+        console.log('datoscode', datoscode);
+        console.log('codigodddddddddddddddddd', codigo);
         const zonas = respuesta2.ok ? await respuesta2.json() : [];
         // Si hay errores, volvemos a renderizar la página con las alertas
         return res.render('inicio', {
