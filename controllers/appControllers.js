@@ -68,6 +68,7 @@ const guardarCodigo= async(req, res) =>{
         .withMessage('Espera a que se cargue la descripción del producto')
         .run(req);
     let resultado = validationResult(req);
+    let codigo_barra = '';
     //console.log(resultado)
     if (!resultado.isEmpty()) {
         // Petición a la API de Render para traer los colectores
@@ -76,7 +77,7 @@ const guardarCodigo= async(req, res) =>{
         const respuesta2 = await fetch(`${process.env.API_URL}/inventario/zonas`);
         const respuesta3 = await fetch(`${process.env.API_URL}/apicornejo/codigobybarcode/${codigo}`);
         const datoscode = await respuesta3.json();
-        const codigo_barra = datoscode.CLAVE_PRINCIPAL || '';
+        codigo_barra = datoscode.CLAVE_PRINCIPAL || '';
         console.log('datoscode', datoscode);
         console.log('codigodddddddddddddddddd', codigo_barra);
         const zonas = respuesta2.ok ? await respuesta2.json() : [];
