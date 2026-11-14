@@ -78,7 +78,7 @@ const guardarCodigo= async(req, res) =>{
         const datoscode = await respuesta3.json();
         const codigo_barra = datoscode.CLAVE_PRINCIPAL || '';
         console.log('datoscode', datoscode);
-        console.log('codigodddddddddddddddddd', codigo);
+        console.log('codigodddddddddddddddddd', codigo_barra);
         const zonas = respuesta2.ok ? await respuesta2.json() : [];
         // Si hay errores, volvemos a renderizar la página con las alertas
         return res.render('inicio', {
